@@ -42,13 +42,13 @@ async function request<T>(
       const data = await response.json();
       message = data?.message || message;
     } catch {
-      // fallback silencioso
+     
     }
 
     throw new Error(message);
   }
 
-  // DELETE normalmente retorna vazio
+  
   if (response.status === 204) {
     return null as T;
   }
@@ -125,9 +125,7 @@ export function useTasks() {
     []
   );
 
-  /**
-   * Validação reutilizável
-   */
+
   const validateTitle = useCallback((title: string) => {
     if (!title.trim()) {
       throw new Error("Título é obrigatório");
@@ -198,10 +196,10 @@ export function useTasks() {
 
       const optimisticValue = !currentTask.completed;
 
-      // snapshot para rollback
+      
       const previousTasks = tasks;
 
-      // atualização otimista imediata
+      
       setTasks((prev) =>
         prev.map((task) =>
           task.id === id
@@ -218,14 +216,14 @@ export function useTasks() {
           completed: optimisticValue,
         });
 
-        // sincroniza com resposta real da API
+        
         setTasks((prev) =>
           prev.map((task) =>
             task.id === id ? updatedTask : task
           )
         );
       } catch (err) {
-        // rollback
+        
         setTasks(previousTasks);
 
         const message =
@@ -242,13 +240,13 @@ export function useTasks() {
     async (id: string) => {
       const previousTasks = tasks;
 
-      // remove otimisticamente
+      
       setTasks((prev) => prev.filter((task) => task.id !== id));
 
       try {
         await tasksApi.remove(id);
       } catch (err) {
-        // rollback
+        
         setTasks(previousTasks);
 
         const message =
@@ -278,4 +276,3 @@ export function useTasks() {
     deleteTask,
   };
 }
-```
